@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>X Post Generation｜SINCE YOU 本店</title>
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#000000">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <div class="brand">
+      <svg class="x-logo" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+      <h1 aria-label="X Post Generation">Post Generation</h1>
+    </div>
+    <p>SINCE YOU... -本店-</p>
+  </div>
+
+  <div class="tabs">
+    <div class="tab active" data-type="pickup">Pickup</div>
+    <div class="tab" data-type="birthday">Happy Birthday</div>
+    <div class="tab" data-type="event">イベント</div>
+  </div>
+
+  <div id="cast-section" class="sec">
+    <div class="lbl">キャスト選択 <span class="req">必須</span><span id="cast-sync-status" class="sync-status"></span><button type="button" id="cast-sync-refresh" class="sync-refresh-btn" title="キャスト一覧を今すぐ更新">⟳ 更新</button></div>
+    <div id="cast-field">
+      <select id="cast-select"></select>
+      <div class="err-msg" id="cast-error">キャストを選択してください</div>
+    </div>
+  </div>
+
+  <div id="event-section" style="display:none;">
+    <div class="sec">
+      <div class="lbl">イベント日付 <span class="req">必須</span></div>
+      <div id="date-field">
+        <input type="date" id="event-date">
+        <div class="err-msg" id="date-error">日付を入力してください</div>
+      </div>
+    </div>
+    <div class="sec">
+      <div class="lbl">イベント名 <span class="req">必須</span></div>
+      <div id="name-field">
+        <input type="text" id="event-name" placeholder="イベント名を入力">
+        <div class="err-msg" id="name-error">イベント名を入力してください</div>
+      </div>
+    </div>
+  </div>
+
+  <div id="links-section">
+    <hr class="divider">
+    <div class="sec">
+      <div class="lbl">SNSリンク</div>
+      <div class="sec">
+        <div class="lbl" style="margin-bottom:4px;">𝐗</div>
+        <input type="text" id="link-x" placeholder="https://x.com/...">
+      </div>
+      <div class="sec">
+        <div class="lbl" style="margin-bottom:4px;">𝐈𝐧𝐬𝐭𝐚𝐠𝐫𝐚𝐦</div>
+        <input type="text" id="link-instagram" placeholder="https://www.instagram.com/...">
+      </div>
+      <div class="sec">
+        <div class="lbl" style="margin-bottom:4px;">𝐓𝐢𝐤𝐓𝐨𝐤</div>
+        <input type="text" id="link-tiktok" placeholder="https://www.tiktok.com/...">
+      </div>
+      <div class="sec">
+        <div class="lbl" style="margin-bottom:4px;">ホスホス</div>
+        <input type="text" id="link-hosuhosu" placeholder="https://www.host2.jp/...">
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <div class="preview-wrap">
+    <div class="preview-label">プレビュー</div>
+    <div class="preview-text" id="preview-text">フォームを入力するとここに表示されます</div>
+    <div class="char-count" id="char-count"></div>
+  </div>
+
+  <div class="media-hint" id="media-hint">※投稿画面で動画を添付してください</div>
+
+  <div class="btn-row">
+    <button class="btn btn-secondary" id="copy-btn">コピー</button>
+    <button class="btn btn-primary" id="post-btn">𝕏 アプリで開く</button>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script src="casts.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
