@@ -74,9 +74,17 @@ function getManualLinks() {
 
 // SNSブロックは X／Instagram／TikTok／ホスホスの順で出力するが、リンクが空の項目は
 // 見出し・URLごと省略する（全て空なら何も出力しない）。
+// XはURLのままだと、Xアプリが自社ドメインへのリンクを検出して投稿末尾に動かしてしまう
+// （インテントURL経由・手動貼り付けの両方で発生することを確認済み）。
+// @ユーザー名のメンション形式に変換すると、Xがネイティブに扱うリンクになりこの挙動を回避できる。
+function toXHandle(url) {
+  const m = url.match(/^https?:\/\/(?:www\.)?(?:x|twitter)\.com\/([A-Za-z0-9_]{1,15})\/?$/i);
+  return m ? '@' + m[1] : url;
+}
+
 function buildSnsRows(links) {
   const entries = [
-    { label: '𝐗', value: links.x },
+    { label: '𝐗', value: links.x ? toXHandle(links.x) : links.x },
     { label: '𝐈𝐧𝐬𝐭𝐚𝐠𝐫𝐚𝐦', value: links.instagram },
     { label: '𝐓𝐢𝐤𝐓𝐨𝐤', value: links.tiktok },
     { label: 'ホスホス', value: links.hosuhosu },
