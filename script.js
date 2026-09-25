@@ -18,6 +18,43 @@ function toMathBold(input) {
 
 const WEEKDAYS = ['Sun.', 'Mon.', 'Tue.', 'Wed.', 'Thu.', 'Fri.', 'Sat.'];
 
+// ===== 中央揃え =====
+// Xに投稿されるのはプレーンテキストで、CSSのtext-alignは反映されない。
+// そのため中央揃えが必要な行は、実際の文字列に全角スペースを詰めて見た目を中央に寄せる
+// （コピー・投稿されるテキスト自体にこのパディングが含まれる）。
+const CENTER_WIDTH = 42;
+
+function charWidth(ch) {
+  const cp = ch.codePointAt(0);
+  if (cp >= 0x1f000) return 1; // 絵文字はXの表示上ほぼ半角1文字相当として扱う
+  if (
+    (cp >= 0x2e80 && cp <= 0x9fff) ||
+    (cp >= 0xac00 && cp <= 0xd7af) ||
+    (cp >= 0xf900 && cp <= 0xfaff) ||
+    (cp >= 0xfe10 && cp <= 0xfe6f) ||
+    (cp >= 0xff01 && cp <= 0xff60) ||
+    (cp >= 0xffe0 && cp <= 0xffe6) ||
+    (cp >= 0x2500 && cp <= 0x257f) ||
+    (cp >= 0x3000 && cp <= 0x303f) ||
+    (cp >= 0x3040 && cp <= 0x30ff) ||
+    cp > 0xffff
+  ) {
+    return 2;
+  }
+  return 1;
+}
+
+function stringWidth(s) {
+  return Array.from(s).reduce((sum, ch) => sum + charWidth(ch), 0);
+}
+
+function padCenter(text) {
+  const gap = CENTER_WIDTH - stringWidth(text);
+  if (gap <= 0) return text;
+  const each = Math.floor(Math.floor(gap / 2) / 2);
+  return '　'.repeat(each) + text + '　'.repeat(each);
+}
+
 // ===== 固定テンプレート要素（仕様書の原文どおり） =====
 const DIVIDER = '━'.repeat(21);
 const PICKUP_HEADER = '━━━━━━［Ｐｉｃｋｕｐ］━━━━━━━';
@@ -366,8 +403,12 @@ function currentRows() {
   return buildEventRows();
 }
 
+function rowText(row) {
+  return row.center && row.text ? padCenter(row.text) : row.text;
+}
+
 function rowsToPlainText(rows) {
-  return rows.map((row) => row.text).join('\n');
+  return rows.map(rowText).join('\n');
 }
 
 function renderPreview(rows) {
@@ -376,15 +417,16 @@ function renderPreview(rows) {
   rows.forEach((row) => {
     const line = document.createElement('div');
     const isDividerRow = row.text.startsWith('━');
+    const text = rowText(row);
     line.className =
       'line' +
       (row.center ? ' line-center' : '') +
       (isDividerRow ? ' line-accent' : row.center ? ' line-strong' : '');
-    line.textContent = row.text || ' '; // 空行にも高さを持たせる
-    if (row.text) {
+    line.textContent = text || ' '; // 空行にも高さを持たせる
+    if (text) {
       // URLとハッシュタグはXの投稿と同じくアクセント色で表示する（表示のみ。コピー/投稿テキストには影響しない）
       line.textContent = '';
-      row.text.split(/(https?:\/\/\S+|#\S+)/g).forEach((part) => {
+      text.split(/(https?:\/\/\S+|#\S+)/g).forEach((part) => {
         if (!part) return;
         if (/^(https?:\/\/|#)/.test(part)) {
           const span = document.createElement('span');
